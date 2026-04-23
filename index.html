@@ -3,12 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎮 HTML5 Game Launcher</title>
-
+    <title>🎮 VatruStudio игровой центр</title>
     <!-- JSZip для работы с ZIP-архивами -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js">
-    </script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         :root {
             --bg: #0f0f1a;
@@ -46,7 +43,6 @@
                 radial-gradient(ellipse at 80% 80%, rgba(179, 136, 255, 0.04) 0%, transparent 60%);
         }
 
-        /* ===== HEADER ===== */
         header {
             background: var(--surface);
             border-bottom: 1px solid var(--border);
@@ -78,7 +74,6 @@
             margin-left: auto;
         }
 
-        /* ===== BUTTONS ===== */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -127,16 +122,7 @@
             font-size: 0.82em;
             border-radius: 8px;
         }
-        .btn-icon {
-            width: 38px;
-            height: 38px;
-            padding: 0;
-            border-radius: 50%;
-            justify-content: center;
-            font-size: 1.2em;
-        }
 
-        /* ===== MAIN LAYOUT ===== */
         main {
             flex: 1;
             padding: 24px 28px;
@@ -148,7 +134,6 @@
             gap: 24px;
         }
 
-        /* ===== DROP ZONE ===== */
         .drop-zone {
             border: 2px dashed var(--border);
             border-radius: var(--radius);
@@ -157,8 +142,6 @@
             transition: var(--transition);
             cursor: pointer;
             background: var(--surface);
-            position: relative;
-            overflow: hidden;
         }
         .drop-zone:hover,
         .drop-zone.drag-active {
@@ -205,7 +188,6 @@
             letter-spacing: 0.3px;
         }
 
-        /* ===== GAME GRID ===== */
         .section-title {
             font-size: 1.1em;
             font-weight: 700;
@@ -233,11 +215,10 @@
             border: 1px solid var(--border);
             border-radius: var(--radius);
             padding: 20px;
-            cursor: pointer;
             transition: var(--transition);
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 8px;
             position: relative;
             overflow: hidden;
         }
@@ -249,14 +230,18 @@
         .game-card .game-icon {
             font-size: 2.5em;
             text-align: center;
-            line-height: 1;
         }
         .game-card .game-name {
             font-weight: 700;
-            font-size: 1em;
             text-align: center;
             word-break: break-word;
             line-height: 1.3;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 6px;
+        }
+        .game-card .game-name:hover {
+            background: rgba(255, 255, 255, 0.05);
         }
         .game-card .game-meta {
             font-size: 0.75em;
@@ -287,7 +272,7 @@
             opacity: 0.7;
         }
 
-        /* ===== GAME PLAYER OVERLAY ===== */
+        /* Player overlay */
         .player-overlay {
             position: fixed;
             inset: 0;
@@ -298,12 +283,8 @@
             animation: fadeIn 0.3s ease;
         }
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         .player-toolbar {
             display: flex;
@@ -312,7 +293,6 @@
             padding: 10px 18px;
             background: var(--surface);
             border-bottom: 1px solid var(--border);
-            flex-shrink: 0;
         }
         .player-toolbar .game-title-display {
             font-weight: 700;
@@ -344,7 +324,6 @@
             pointer-events: none;
         }
 
-        /* ===== TOAST ===== */
         .toast-container {
             position: fixed;
             bottom: 24px;
@@ -375,79 +354,30 @@
             border-left-color: var(--success);
         }
         @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(60px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+            from { opacity: 0; transform: translateX(60px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
-            header {
-                padding: 12px 16px;
-                gap: 10px;
-            }
-            .logo {
-                font-size: 1.3em;
-            }
-            .btn {
-                padding: 9px 14px;
-                font-size: 0.85em;
-                gap: 5px;
-            }
-            main {
-                padding: 16px;
-                gap: 16px;
-            }
-            .drop-zone {
-                padding: 28px 16px;
-            }
-            .game-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-                gap: 10px;
-            }
-            .game-card {
-                padding: 14px;
-                gap: 8px;
-            }
-            .player-toolbar {
-                padding: 8px 12px;
-                gap: 8px;
-            }
-        }
-        @media (max-width: 480px) {
-            .game-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .header-actions {
-                width: 100%;
-                justify-content: flex-end;
-            }
+            header { padding: 12px 16px; }
+            .logo { font-size: 1.3em; }
+            .btn { padding: 9px 14px; font-size: 0.85em; }
+            main { padding: 16px; }
+            .drop-zone { padding: 28px 16px; }
+            .game-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
         }
     </style>
 </head>
 <body>
-
-    <!-- ==================== HEADER ==================== -->
     <header>
-        <span class="logo">🎮 Game Launcher</span>
+        <span class="logo">🎮 VatruStudio игровой центр</span>
         <div class="header-actions">
-            <button class="btn btn-outline btn-sm" onclick="clearAllGames()" title="Удалить все игры">
-                🗑️ Очистить всё
-            </button>
-            <button class="btn btn-outline btn-sm" onclick="exportAllGames()" title="Скачать все игры одним ZIP-архивом">
-                📦 Экспорт
-            </button>
+            <button class="btn btn-outline btn-sm" onclick="clearAllGames()">🗑️ Очистить всё</button>
+            <button class="btn btn-outline btn-sm" onclick="exportAllGames()">📦 Экспорт</button>
         </div>
     </header>
 
-    <!-- ==================== MAIN ==================== -->
     <main>
-        <!-- Зона загрузки -->
         <div class="drop-zone" id="dropZone">
             <span class="drop-zone-icon">📂</span>
             <h3>Перетащите файлы сюда</h3>
@@ -455,53 +385,37 @@
             <div class="supported-formats">
                 <span class="format-badge">.ZIP архив</span>
                 <span class="format-badge">.HTML файл</span>
-                <span class="format-badge">Drag & Drop</span>
             </div>
             <input type="file" id="fileInput" accept=".zip,.html,.htm" multiple>
         </div>
 
-        <!-- Список игр -->
         <div>
             <div class="section-title">
                 📚 Мои игры <span class="count" id="gameCount">0</span>
             </div>
-            <div class="game-grid" id="gameGrid">
-                <div class="empty-state" id="emptyState">
-                    <span class="empty-icon">🎲</span>
-                    <p>Здесь пока нет игр.</p>
-                    <p style="font-size:0.85em;">Загрузите HTML-файл или ZIP-архив с игрой</p>
-                </div>
-            </div>
+            <div class="game-grid" id="gameGrid"></div>
         </div>
     </main>
 
-    <!-- ==================== ИГРОВОЙ ПЛЕЕР (скрыт) ==================== -->
     <div class="player-overlay" id="playerOverlay" style="display:none;">
         <div class="player-toolbar">
             <span class="game-title-display" id="playerTitle">🎮 Игра</span>
-            <button class="btn btn-outline btn-sm" onclick="toggleFullscreen()" title="Полный экран">
-                ⛶
-            </button>
-            <button class="btn btn-outline btn-sm" onclick="reloadGame()" title="Перезапустить игру">
-                🔄
-            </button>
-            <button class="btn btn-danger btn-sm" onclick="closePlayer()" title="Закрыть игру">
-                ✕ Закрыть
-            </button>
+            <button class="btn btn-outline btn-sm" onclick="toggleFullscreen()">⛶</button>
+            <button class="btn btn-outline btn-sm" onclick="reloadGame()">🔄</button>
+            <button class="btn btn-danger btn-sm" onclick="closePlayer()">✕ Закрыть</button>
         </div>
         <div class="player-iframe-container" id="playerContainer">
             <div class="player-placeholder" id="playerPlaceholder">Загрузка игры...</div>
-            <iframe id="gameIframe" sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-modals allow-forms allow-popups" allow="fullscreen; autoplay; clipboard-write" loading="lazy"></iframe>
+            <iframe id="gameIframe" sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-modals allow-forms allow-popups" allow="fullscreen; autoplay; clipboard-write"></iframe>
         </div>
     </div>
 
-    <!-- ==================== TOAST КОНТЕЙНЕР ==================== -->
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
         (function() {
-            // ============ БАЗА ДАННЫХ (IndexedDB) ============
-            const DB_NAME = 'GameLauncherDB';
+            // ---------- IndexedDB ----------
+            const DB_NAME = 'VatruStudioDB';
             const DB_VERSION = 1;
             const STORE_NAME = 'games';
             let db = null;
@@ -517,20 +431,13 @@
                             store.createIndex('addedAt', 'addedAt', { unique: false });
                         }
                     };
-                    request.onsuccess = (e) => {
-                        db = e.target.result;
-                        resolve(db);
-                    };
-                    request.onerror = (e) => {
-                        console.error('IndexedDB error:', e.target.error);
-                        reject(e.target.error);
-                    };
+                    request.onsuccess = (e) => { db = e.target.result; resolve(db); };
+                    request.onerror = (e) => reject(e.target.error);
                 });
             }
 
             function saveGameToDB(gameData) {
                 return new Promise((resolve, reject) => {
-                    if (!db) { reject('DB not open'); return; }
                     const tx = db.transaction(STORE_NAME, 'readwrite');
                     const store = tx.objectStore(STORE_NAME);
                     const request = store.put(gameData);
@@ -541,7 +448,6 @@
 
             function getAllGamesFromDB() {
                 return new Promise((resolve, reject) => {
-                    if (!db) { reject('DB not open'); return; }
                     const tx = db.transaction(STORE_NAME, 'readonly');
                     const store = tx.objectStore(STORE_NAME);
                     const request = store.getAll();
@@ -552,7 +458,6 @@
 
             function deleteGameFromDB(id) {
                 return new Promise((resolve, reject) => {
-                    if (!db) { reject('DB not open'); return; }
                     const tx = db.transaction(STORE_NAME, 'readwrite');
                     const store = tx.objectStore(STORE_NAME);
                     const request = store.delete(id);
@@ -563,7 +468,6 @@
 
             function clearAllGamesFromDB() {
                 return new Promise((resolve, reject) => {
-                    if (!db) { reject('DB not open'); return; }
                     const tx = db.transaction(STORE_NAME, 'readwrite');
                     const store = tx.objectStore(STORE_NAME);
                     const request = store.clear();
@@ -572,16 +476,19 @@
                 });
             }
 
-            // ============ УПРАВЛЕНИЕ СОСТОЯНИЕМ ============
-            let gamesCache = [];
-            let currentGameBlobUrl = null;
-            let currentGameId = null;
+            function updateGameInDB(gameData) {
+                return saveGameToDB(gameData); // перезапись по ключу
+            }
 
-            // ============ DOM ЭЛЕМЕНТЫ ============
+            // ---------- Глобальные переменные ----------
+            let gamesCache = [];
+            let currentGameId = null;
+            let activeBlobUrls = []; // для очистки при закрытии игры
+
+            // ---------- DOM ----------
             const dropZone = document.getElementById('dropZone');
             const fileInput = document.getElementById('fileInput');
             const gameGrid = document.getElementById('gameGrid');
-            const emptyState = document.getElementById('emptyState');
             const gameCountEl = document.getElementById('gameCount');
             const playerOverlay = document.getElementById('playerOverlay');
             const playerTitle = document.getElementById('playerTitle');
@@ -590,7 +497,7 @@
             const toastContainer = document.getElementById('toastContainer');
             const playerContainer = document.getElementById('playerContainer');
 
-            // ============ ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ============
+            // ---------- Утилиты ----------
             function generateId() {
                 return 'game_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
             }
@@ -607,159 +514,15 @@
                 }, 3500);
             }
 
-            function getFileExtension(filename) {
-                return filename.split('.').pop().toLowerCase();
-            }
-
-            // ============ ОБРАБОТКА ZIP ============
-            async function processZipFile(zipFile, zipFileName) {
-                if (typeof JSZip === 'undefined') {
-                    throw new Error('Библиотека JSZip не загружена. Проверьте подключение к интернету.');
-                }
-                const zip = await JSZip.loadAsync(zipFile);
-                const files = Object.keys(zip.files).filter(f =>
-                    !zip.files[f].dir && (f.endsWith('.html') || f.endsWith('.htm'))
-                );
-
-                if (files.length === 0) {
-                    throw new Error('В ZIP-архиве не найдено HTML-файлов.');
-                }
-
-                // Ищем index.html или первый html
-                let mainFile = files.find(f => f.toLowerCase().includes('index.html')) ||
-                    files.find(f => f.toLowerCase().includes('index.htm')) ||
-                    files[0];
-
-                // Собираем полный архив как blob
-                const fullZipBlob = await zip.generateAsync({ type: 'blob' });
-                const blobUrl = URL.createObjectURL(fullZipBlob);
-
-                const gameData = {
-                    id: generateId(),
-                    name: zipFileName.replace(/\.zip$/i, '') || 'Игра из ZIP',
-                    type: 'zip',
-                    blobUrl: blobUrl,
-                    originalName: zipFileName,
-                    mainFile: mainFile,
-                    addedAt: Date.now(),
-                };
-
-                return gameData;
-            }
-
-            async function processHtmlFile(htmlFile) {
-                const blobUrl = URL.createObjectURL(htmlFile);
-                const gameData = {
-                    id: generateId(),
-                    name: htmlFile.name.replace(/\.html?$/i, '') || 'HTML Игра',
-                    type: 'html',
-                    blobUrl: blobUrl,
-                    originalName: htmlFile.name,
-                    mainFile: htmlFile.name,
-                    addedAt: Date.now(),
-                };
-                return gameData;
-            }
-
-            async function handleFiles(files) {
-                if (!files || files.length === 0) return;
-                let addedCount = 0;
-                const errors = [];
-
-                for (const file of files) {
-                    try {
-                        const ext = getFileExtension(file.name);
-                        let gameData = null;
-
-                        if (ext === 'zip') {
-                            gameData = await processZipFile(file, file.name);
-                        } else if (ext === 'html' || ext === 'htm') {
-                            gameData = await processHtmlFile(file);
-                        } else {
-                            errors.push(`Неподдерживаемый формат: ${file.name}`);
-                            continue;
-                        }
-
-                        await saveGameToDB(gameData);
-                        addedCount++;
-                    } catch (err) {
-                        errors.push(`${file.name}: ${err.message}`);
-                        console.error('Ошибка обработки файла:', file.name, err);
-                    }
-                }
-
-                if (addedCount > 0) {
-                    showToast(`✅ Добавлено игр: ${addedCount}`, 'success');
-                }
-                if (errors.length > 0) {
-                    errors.forEach(e => showToast('❌ ' + e, 'error'));
-                }
-                await refreshGameList();
-            }
-
-            // ============ ОТОБРАЖЕНИЕ ИГР ============
-            async function refreshGameList() {
-                gamesCache = await getAllGamesFromDB();
-                gameGrid.innerHTML = '';
-                gameCountEl.textContent = gamesCache.length;
-
-                if (gamesCache.length === 0) {
-                    gameGrid.innerHTML = `
-                        <div class="empty-state" id="emptyState">
-                            <span class="empty-icon">🎲</span>
-                            <p>Здесь пока нет игр.</p>
-                            <p style="font-size:0.85em;">Загрузите HTML-файл или ZIP-архив с игрой</p>
-                        </div>`;
-                    return;
-                }
-
-                // Сортируем: новые сверху
-                gamesCache.sort((a, b) => b.addedAt - a.addedAt);
-
-                gamesCache.forEach(game => {
-                    const card = document.createElement('div');
-                    card.className = 'game-card';
-                    card.innerHTML = `
-                        <div class="game-icon">${game.type === 'zip' ? '📦' : '🎯'}</div>
-                        <div class="game-name" title="${escapeHtml(game.name)}">${escapeHtml(game.name)}</div>
-                        <div class="game-meta">
-                            ${game.type === 'zip' ? 'ZIP архив' : 'HTML файл'}
-                            · ${new Date(game.addedAt).toLocaleDateString('ru-RU')}
-                        </div>
-                        <div class="card-actions">
-                            <button class="btn btn-primary btn-sm play-btn" data-id="${game.id}">▶ Играть</button>
-                            <button class="btn btn-outline btn-sm delete-btn" data-id="${game.id}" title="Удалить">🗑️</button>
-                        </div>
-                    `;
-                    gameGrid.appendChild(card);
-                });
-
-                // Навешиваем обработчики
-                document.querySelectorAll('.play-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        const id = btn.getAttribute('data-id');
-                        launchGame(id);
-                    });
-                });
-                document.querySelectorAll('.delete-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        const id = btn.getAttribute('data-id');
-                        deleteGame(id);
-                    });
-                });
-                // Клик по карточке = запуск
-                document.querySelectorAll('.game-card').forEach(card => {
-                    card.addEventListener('click', (e) => {
-                        if (e.target.closest('button')) return; // не срабатывает на кнопках
-                        const playBtn = card.querySelector('.play-btn');
-                        if (playBtn) {
-                            const id = playBtn.getAttribute('data-id');
-                            launchGame(id);
-                        }
-                    });
-                });
+            // Читаемое имя из имени файла
+            function readableName(filename) {
+                let name = filename.replace(/\.(zip|html|htm)$/i, '');
+                // заменяем дефисы, подчёркивания, точки на пробелы
+                name = name.replace(/[-_\.]+/g, ' ');
+                // делаем первую букву каждого слова заглавной
+                name = name.replace(/\b\w/g, c => c.toUpperCase());
+                // убираем лишние пробелы
+                return name.trim() || 'Без названия';
             }
 
             function escapeHtml(str) {
@@ -768,18 +531,65 @@
                 return div.innerHTML;
             }
 
-            // ============ ЗАПУСК ИГРЫ ============
-            function launchGame(id) {
-                const game = gamesCache.find(g => g.id === id);
-                if (!game) {
-                    showToast('Игра не найдена', 'error');
-                    return;
+            function revokeBlobUrls(urls) {
+                urls.forEach(url => {
+                    try { URL.revokeObjectURL(url); } catch(e) {}
+                });
+            }
+
+            // ---------- Распаковка ZIP и запуск ----------
+            async function prepareZipGame(game) {
+                // Получаем blob архива
+                const response = await fetch(game.blobUrl);
+                const zipBlob = await response.blob();
+                const zip = await JSZip.loadAsync(zipBlob);
+
+                // Находим главный HTML
+                const htmlFiles = Object.keys(zip.files).filter(f => !zip.files[f].dir && (f.endsWith('.html') || f.endsWith('.htm')));
+                if (htmlFiles.length === 0) throw new Error('В ZIP нет HTML-файлов');
+                const mainFile = htmlFiles.find(f => f.toLowerCase().includes('index.html') || f.toLowerCase().includes('index.htm')) || htmlFiles[0];
+
+                // Читаем главный HTML
+                const mainContent = await zip.file(mainFile).async('text');
+
+                // Создаём blob URL для всех остальных файлов
+                const blobUrls = {};
+                for (const filename of Object.keys(zip.files)) {
+                    if (zip.files[filename].dir || filename === mainFile) continue;
+                    const fileBlob = await zip.file(filename).async('blob');
+                    const url = URL.createObjectURL(fileBlob);
+                    blobUrls[filename] = url;
+                    activeBlobUrls.push(url); // для последующей очистки
                 }
 
-                // Очищаем предыдущий blob URL если был
-                if (currentGameBlobUrl && currentGameId !== id) {
-                    // Не освобождаем сразу, так как он может быть нужен
+                // Заменяем относительные ссылки в HTML на blob URL
+                let modifiedHtml = mainContent;
+                // Простая замена: ищем все вхождения имён файлов внутри атрибутов src, href, и в url()
+                // Это покрывает большинство случаев
+                for (const [filename, blobUrl] of Object.entries(blobUrls)) {
+                    // Экранируем специальные символы для регулярки
+                    const escapedName = filename.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    // Замена в src="..." и href="..."
+                    const regex = new RegExp(`(src|href)=["']${escapedName}["']`, 'gi');
+                    modifiedHtml = modifiedHtml.replace(regex, `$1="${blobUrl}"`);
+                    // Замена в url(...)
+                    const urlRegex = new RegExp(`url\\(["']?${escapedName}["']?\\)`, 'gi');
+                    modifiedHtml = modifiedHtml.replace(urlRegex, `url(${blobUrl})`);
                 }
+
+                const finalBlob = new Blob([modifiedHtml], { type: 'text/html' });
+                const finalUrl = URL.createObjectURL(finalBlob);
+                activeBlobUrls.push(finalUrl);
+                return finalUrl;
+            }
+
+            async function launchGame(id) {
+                const game = gamesCache.find(g => g.id === id);
+                if (!game) return;
+
+                // Очищаем предыдущие blob URL
+                revokeBlobUrls(activeBlobUrls);
+                activeBlobUrls = [];
 
                 currentGameId = id;
                 playerTitle.textContent = '🎮 ' + game.name;
@@ -787,235 +597,224 @@
                 playerPlaceholder.style.display = 'flex';
                 gameIframe.src = '';
 
-                // Небольшая задержка для сброса iframe
-                setTimeout(() => {
-                    let srcUrl = game.blobUrl;
-
-                    // Для ZIP нужно создать специальный URL с путём к главному файлу
-                    if (game.type === 'zip' && game.mainFile) {
-                        // Используем blobUrl и добавляем параметр для сервис-воркера
-                        // Но так как мы используем blob, то for zip используем особый подход:
-                        // создаём промежуточный HTML, который загружает содержимое из ZIP через JSZip
-                        srcUrl = createZipLoaderUrl(game);
+                try {
+                    let srcUrl;
+                    if (game.type === 'zip') {
+                        playerPlaceholder.textContent = 'Распаковка архива...';
+                        srcUrl = await prepareZipGame(game);
+                    } else {
+                        srcUrl = game.blobUrl;
                     }
-
                     gameIframe.src = srcUrl;
-                    currentGameBlobUrl = srcUrl;
-
-                    gameIframe.onload = () => {
-                        playerPlaceholder.style.display = 'none';
-                    };
+                    gameIframe.onload = () => { playerPlaceholder.style.display = 'none'; };
                     gameIframe.onerror = () => {
-                        playerPlaceholder.style.display = 'flex';
-                        playerPlaceholder.innerHTML =
-                            '<span style="color:#ff5252;">⚠️ Ошибка загрузки игры. Возможно, файл повреждён.</span>';
+                        playerPlaceholder.innerHTML = '<span style="color:#ff5252;">⚠️ Ошибка загрузки игры</span>';
                     };
-
-                    // Таймаут: если игра не загрузилась за 10 секунд
-                    setTimeout(() => {
-                        if (playerPlaceholder.style.display !== 'none') {
-                            playerPlaceholder.innerHTML =
-                                '<span style="color:#ffa000;">⏳ Игра всё ещё загружается... Возможно, она тяжёлая.</span>';
-                        }
-                    }, 10000);
-                }, 100);
-            }
-
-            function createZipLoaderUrl(game) {
-                // Создаём HTML-страницу, которая распаковывает ZIP и показывает главный файл
-                const loaderHtml = `<!DOCTYPE html>
-        <html>
-        <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-        <title>${escapeHtml(game.name)}</title>
-        <style>body{margin:0;padding:0;overflow:hidden;background:#000;} iframe{width:100vw;height:100vh;border:none;}</style>
-        </head>
-        <body>
-        <iframe id="contentFrame" sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-modals allow-forms allow-popups" allow="fullscreen; autoplay; clipboard-write"></iframe>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"><\/script>
-        <script>
-        (async function(){
-            try{
-                const response = await fetch('${game.blobUrl}');
-                const blob = await response.blob();
-                const zip = await JSZip.loadAsync(blob);
-                const mainFile = '${game.mainFile.replace(/'/g, "\\'")}';
-                const file = zip.file(mainFile);
-                if(!file) throw new Error('Main file not found: ' + mainFile);
-                const content = await file.async('text');
-                const blobHtml = new Blob([content], {type:'text/html'});
-                const url = URL.createObjectURL(blobHtml);
-                document.getElementById('contentFrame').src = url;
-            }catch(e){
-                document.body.innerHTML = '<div style="color:red;padding:20px;font-family:sans-serif;">❌ Ошибка загрузки: ' + e.message + '</div>';
-            }
-        })();
-        <\/script>
-        </body>
-        </html>`;
-                const loaderBlob = new Blob([loaderHtml], { type: 'text/html' });
-                return URL.createObjectURL(loaderBlob);
+                } catch (err) {
+                    playerPlaceholder.innerHTML = `<span style="color:#ff5252;">❌ ${escapeHtml(err.message)}</span>`;
+                    console.error(err);
+                }
             }
 
             function closePlayer() {
                 playerOverlay.style.display = 'none';
                 gameIframe.src = '';
-                playerPlaceholder.style.display = 'flex';
-                playerPlaceholder.innerHTML = 'Загрузка игры...';
+                revokeBlobUrls(activeBlobUrls);
+                activeBlobUrls = [];
                 currentGameId = null;
-                // Не освобождаем blobUrl здесь, так как он хранится в БД
+                playerPlaceholder.textContent = 'Загрузка игры...';
             }
 
             function reloadGame() {
-                if (currentGameId) {
-                    launchGame(currentGameId);
-                }
+                if (currentGameId) launchGame(currentGameId);
             }
 
             function toggleFullscreen() {
                 if (document.fullscreenElement) {
                     document.exitFullscreen();
                 } else {
-                    playerContainer.requestFullscreen().catch(() => {
-                        // Fallback: открываем iframe в полный экран
-                        if (gameIframe.requestFullscreen) {
-                            gameIframe.requestFullscreen().catch(() => {});
-                        }
-                    });
+                    playerContainer.requestFullscreen().catch(() => {});
                 }
             }
 
-            // ============ УДАЛЕНИЕ ============
+            // ---------- Управление играми ----------
+            async function refreshGameList() {
+                gamesCache = await getAllGamesFromDB();
+                gameGrid.innerHTML = '';
+                gameCountEl.textContent = gamesCache.length;
+                if (gamesCache.length === 0) {
+                    gameGrid.innerHTML = `<div class="empty-state"><span class="empty-icon">🎲</span><p>Здесь пока нет игр.</p><p style="font-size:0.85em;">Загрузите HTML-файл или ZIP-архив</p></div>`;
+                    return;
+                }
+                gamesCache.sort((a, b) => b.addedAt - a.addedAt);
+                gamesCache.forEach(game => {
+                    const card = document.createElement('div');
+                    card.className = 'game-card';
+                    card.innerHTML = `
+                        <div class="game-icon">${game.type === 'zip' ? '📦' : '🎯'}</div>
+                        <div class="game-name" title="Двойной клик — переименовать">${escapeHtml(game.name)}</div>
+                        <div class="game-meta">${game.type === 'zip' ? 'ZIP' : 'HTML'} · ${new Date(game.addedAt).toLocaleDateString('ru-RU')}</div>
+                        <div class="card-actions">
+                            <button class="btn btn-primary btn-sm play-btn" data-id="${game.id}">▶ Играть</button>
+                            <button class="btn btn-outline btn-sm rename-btn" data-id="${game.id}">✏️</button>
+                            <button class="btn btn-outline btn-sm delete-btn" data-id="${game.id}">🗑️</button>
+                        </div>
+                    `;
+                    // Обработчики
+                    card.querySelector('.play-btn').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        launchGame(game.id);
+                    });
+                    card.querySelector('.delete-btn').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        deleteGame(game.id);
+                    });
+                    card.querySelector('.rename-btn').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        renameGame(game.id);
+                    });
+                    // Двойной клик по названию тоже переименовывает
+                    card.querySelector('.game-name').addEventListener('dblclick', (e) => {
+                        e.stopPropagation();
+                        renameGame(game.id);
+                    });
+                    card.addEventListener('click', (e) => {
+                        if (!e.target.closest('button')) launchGame(game.id);
+                    });
+                    gameGrid.appendChild(card);
+                });
+            }
+
             async function deleteGame(id) {
-                if (!confirm('Удалить эту игру? Это действие нельзя отменить.')) return;
+                if (!confirm('Удалить эту игру?')) return;
                 const game = gamesCache.find(g => g.id === id);
-                if (game && game.blobUrl) {
-                    URL.revokeObjectURL(game.blobUrl);
-                }
+                if (game && game.blobUrl) URL.revokeObjectURL(game.blobUrl);
                 await deleteGameFromDB(id);
-                if (currentGameId === id) {
-                    closePlayer();
-                }
+                if (currentGameId === id) closePlayer();
                 await refreshGameList();
                 showToast('Игра удалена', 'success');
             }
 
+            async function renameGame(id) {
+                const game = gamesCache.find(g => g.id === id);
+                if (!game) return;
+                const newName = prompt('Введите новое название игры:', game.name);
+                if (newName === null || newName.trim() === '') return;
+                game.name = newName.trim();
+                await updateGameInDB(game);
+                await refreshGameList();
+                showToast('Название обновлено', 'success');
+            }
+
             async function clearAllGames() {
-                if (!confirm('Удалить ВСЕ игры? Это действие нельзя отменить.')) return;
-                // Освобождаем все blob URL
+                if (!confirm('Удалить ВСЕ игры безвозвратно?')) return;
                 for (const game of gamesCache) {
                     if (game.blobUrl) URL.revokeObjectURL(game.blobUrl);
                 }
                 await clearAllGamesFromDB();
                 closePlayer();
                 await refreshGameList();
-                showToast('Все игры удалены', 'success');
+                showToast('Всё очищено', 'success');
             }
 
             async function exportAllGames() {
-                if (gamesCache.length === 0) {
-                    showToast('Нет игр для экспорта', 'error');
-                    return;
+                if (gamesCache.length === 0) { showToast('Нет игр для экспорта', 'error'); return; }
+                if (typeof JSZip === 'undefined') { showToast('JSZip не загружен', 'error'); return; }
+                const zip = new JSZip();
+                const folder = zip.folder('vatrustudio-games');
+                for (const game of gamesCache) {
+                    const response = await fetch(game.blobUrl);
+                    const blob = await response.blob();
+                    folder.file(game.name + (game.type === 'zip' ? '.zip' : '.html'), blob);
                 }
-                if (typeof JSZip === 'undefined') {
-                    showToast('Библиотека JSZip не загружена. Нужен интернет для экспорта.', 'error');
-                    return;
-                }
-                try {
-                    const zip = new JSZip();
-                    const folder = zip.folder('html5-games-backup');
-                    for (const game of gamesCache) {
-                        const response = await fetch(game.blobUrl);
-                        const blob = await response.blob();
-                        const ext = game.type === 'zip' ? 'zip' : 'html';
-                        folder.file(game.name + '.' + ext, blob);
-                    }
-                    const content = await zip.generateAsync({ type: 'blob' });
-                    const downloadUrl = URL.createObjectURL(content);
-                    const a = document.createElement('a');
-                    a.href = downloadUrl;
-                    a.download = 'html5-games-backup-' + new Date().toISOString().slice(0, 10) + '.zip';
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(downloadUrl);
-                    showToast('📦 Архив с играми скачан!', 'success');
-                } catch (err) {
-                    showToast('Ошибка экспорта: ' + err.message, 'error');
-                }
+                const content = await zip.generateAsync({ type: 'blob' });
+                const url = URL.createObjectURL(content);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'vatrustudio-games-' + new Date().toISOString().slice(0,10) + '.zip';
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast('Архив с играми скачан', 'success');
             }
 
-            // ============ DRAG & DROP ============
+            // ---------- Добавление файлов ----------
+            async function processZipFile(zipFile, zipFileName) {
+                const blobUrl = URL.createObjectURL(zipFile);
+                return {
+                    id: generateId(),
+                    name: readableName(zipFileName),
+                    type: 'zip',
+                    blobUrl: blobUrl,
+                    originalName: zipFileName,
+                    addedAt: Date.now(),
+                };
+            }
+
+            async function processHtmlFile(htmlFile) {
+                const blobUrl = URL.createObjectURL(htmlFile);
+                return {
+                    id: generateId(),
+                    name: readableName(htmlFile.name),
+                    type: 'html',
+                    blobUrl: blobUrl,
+                    originalName: htmlFile.name,
+                    addedAt: Date.now(),
+                };
+            }
+
+            async function handleFiles(files) {
+                if (!files || files.length === 0) return;
+                let addedCount = 0;
+                for (const file of files) {
+                    try {
+                        const ext = file.name.split('.').pop().toLowerCase();
+                        let gameData;
+                        if (ext === 'zip') {
+                            gameData = await processZipFile(file, file.name);
+                        } else if (ext === 'html' || ext === 'htm') {
+                            gameData = await processHtmlFile(file);
+                        } else {
+                            showToast(`Неподдерживаемый формат: ${file.name}`, 'error');
+                            continue;
+                        }
+                        await saveGameToDB(gameData);
+                        addedCount++;
+                    } catch (err) {
+                        showToast(`Ошибка: ${file.name}`, 'error');
+                    }
+                }
+                if (addedCount > 0) showToast(`Добавлено игр: ${addedCount}`, 'success');
+                await refreshGameList();
+            }
+
+            // ---------- Drag & Drop ----------
             dropZone.addEventListener('click', () => fileInput.click());
             fileInput.addEventListener('change', (e) => {
                 handleFiles(e.target.files);
                 fileInput.value = '';
             });
-
-            dropZone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                dropZone.classList.add('drag-active');
-            });
-            dropZone.addEventListener('dragleave', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                dropZone.classList.remove('drag-active');
-            });
+            dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-active'); });
+            dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-active'));
             dropZone.addEventListener('drop', (e) => {
                 e.preventDefault();
-                e.stopPropagation();
                 dropZone.classList.remove('drag-active');
-                const files = e.dataTransfer.files;
-                if (files && files.length > 0) {
-                    handleFiles(files);
-                }
-            });
-
-            // Глобальный drag & drop (на всю страницу)
-            document.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                if (!playerOverlay.style.display || playerOverlay.style.display === 'none') {
-                    dropZone.classList.add('drag-active');
-                }
-            });
-            document.addEventListener('dragleave', (e) => {
-                if (e.relatedTarget === null) {
-                    dropZone.classList.remove('drag-active');
-                }
+                handleFiles(e.dataTransfer.files);
             });
             document.addEventListener('drop', (e) => {
                 e.preventDefault();
                 dropZone.classList.remove('drag-active');
-                if (playerOverlay.style.display && playerOverlay.style.display !== 'none') return;
-                const files = e.dataTransfer.files;
-                if (files && files.length > 0) {
-                    handleFiles(files);
+                if (playerOverlay.style.display === 'none' || !playerOverlay.style.display) {
+                    handleFiles(e.dataTransfer.files);
                 }
             });
+            document.addEventListener('dragover', (e) => e.preventDefault());
 
-            // ============ КЛАВИШИ ============
+            // Клавиша Escape
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && playerOverlay.style.display === 'flex') {
-                    closePlayer();
-                }
+                if (e.key === 'Escape' && playerOverlay.style.display === 'flex') closePlayer();
             });
 
-            // ============ ИНИЦИАЛИЗАЦИЯ ============
-            async function init() {
-                try {
-                    await openDB();
-                    await refreshGameList();
-                    console.log('🎮 Game Launcher готов! IndexedDB подключена.');
-                } catch (err) {
-                    console.error('Ошибка инициализации:', err);
-                    showToast('⚠️ Ошибка доступа к хранилищу. Игры не будут сохраняться между сессиями.', 'error');
-                    // Пробуем работать без БД
-                    gamesCache = [];
-                    refreshGameList();
-                }
-            }
-
-            // Экспорт функций в глобальную область для onclick в HTML
+            // ---------- Экспорт функций в window ----------
             window.clearAllGames = clearAllGames;
             window.exportAllGames = exportAllGames;
             window.closePlayer = closePlayer;
@@ -1023,8 +822,13 @@
             window.toggleFullscreen = toggleFullscreen;
             window.launchGame = launchGame;
             window.deleteGame = deleteGame;
+            window.renameGame = renameGame;
 
-            init();
+            // ---------- Старт ----------
+            openDB().then(() => refreshGameList()).catch(err => {
+                console.error(err);
+                showToast('Ошибка хранилища', 'error');
+            });
         })();
     </script>
 </body>
