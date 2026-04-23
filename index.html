@@ -3,526 +3,580 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎮 VatruStudio игровой центр</title>
-    <!-- JSZip для работы с ZIP-архивами -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <title>🎮 Игровой центр</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js">
+    </script>
     <style>
         :root {
-            --bg: #0f0f1a;
-            --surface: #1a1a2e;
-            --surface2: #222240;
-            --accent: #7c4dff;
+            --bg: #0a0a14;
+            --surface: #141428;
+            --surface2: #1e1e36;
+            --accent: #8c52ff;
             --accent2: #b388ff;
-            --text: #e0e0e0;
-            --text2: #b0b0c0;
+            --text: #e8e8f0;
+            --text2: #a0a0c0;
             --danger: #ff5252;
             --success: #69f0ae;
-            --border: #2a2a40;
-            --radius: 16px;
-            --radius-sm: 10px;
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --border: #2a2a45;
+            --radius: 18px;
+            --radius-sm: 12px;
+            --shadow: 0 8px 32px rgba(0,0,0,0.5);
             --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --sidebar-width: 260px;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin:0; padding:0; box-sizing:border-box; }
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-            background-image:
-                radial-gradient(ellipse at 20% 20%, rgba(124, 77, 255, 0.06) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 80%, rgba(179, 136, 255, 0.04) 0%, transparent 60%);
+            justify-content: center;
+            background-image: radial-gradient(ellipse at 30% 20%, rgba(140,82,255,0.08) 0%, transparent 60%),
+            radial-gradient(ellipse at 70% 80%, rgba(179,136,255,0.05) 0%, transparent 60%);
+        }
+        #app-container {
+            width: 100%;
+            max-width: 1600px;
+            display: flex;
+            position: relative;
         }
 
-        header {
+        /* Боковая панель */
+        #sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
             background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            padding: 16px 28px;
+            border-right: 1px solid var(--border);
+            z-index: 150;
+            transform: translateX(-100%);
+            transition: transform 0.35s ease;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 25px rgba(0,0,0,0.5);
+            padding: 24px 20px;
+            gap: 24px;
+        }
+        #sidebar.open {
+            transform: translateX(0);
+        }
+        .sidebar-header {
             display: flex;
             align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(12px);
+            justify-content: space-between;
+            gap: 12px;
         }
-        .logo {
-            font-size: 1.7em;
+        .sidebar-logo {
+            font-size: 1.4em;
             font-weight: 700;
-            letter-spacing: -0.5px;
             background: linear-gradient(135deg, var(--accent2), var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            white-space: nowrap;
         }
-        .header-actions {
+        .sidebar-close {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+        .sidebar-close:hover { background: rgba(255,255,255,0.05); }
+        .sidebar-nav {
             display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+        }
+        .sidebar-nav button {
+            background: transparent;
+            border: none;
+            color: var(--text2);
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 1em;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
             gap: 10px;
-            flex-wrap: wrap;
-            margin-left: auto;
+            font-family: inherit;
+        }
+        .sidebar-nav button:hover, .sidebar-nav button.active {
+            background: var(--surface2);
+            color: var(--text);
+        }
+        .sidebar-nav button.active {
+            background: rgba(140,82,255,0.15);
+            color: var(--accent2);
+            font-weight: 600;
+        }
+        .sidebar-footer {
+            font-size: 0.8em;
+            color: var(--text2);
+            text-align: center;
         }
 
+        /* Гамбургер */
+        #menu-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 160;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-size: 1.5em;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            transition: var(--transition);
+        }
+        #menu-toggle:hover { background: var(--surface2); }
+
+        /* Основной контент */
+        #main-content {
+            flex: 1;
+            padding: 24px 24px 24px 80px;
+            width: 100%;
+            min-height: 100vh;
+            transition: padding-left 0.35s ease;
+        }
+        .sidebar-open #main-content {
+            padding-left: calc(var(--sidebar-width) + 24px);
+        }
+
+        /* Главный экран */
+        .home-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .home-title {
+            font-size: 2em;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
         .btn {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 11px 20px;
+            padding: 10px 18px;
             border: none;
             border-radius: var(--radius-sm);
             cursor: pointer;
-            font-size: 0.95em;
             font-weight: 600;
-            letter-spacing: 0.2px;
             transition: var(--transition);
-            white-space: nowrap;
             font-family: inherit;
-            text-decoration: none;
+            white-space: nowrap;
         }
         .btn-primary {
             background: var(--accent);
             color: #fff;
-            box-shadow: 0 4px 15px rgba(124, 77, 255, 0.35);
+            box-shadow: 0 4px 15px rgba(140,82,255,0.4);
         }
-        .btn-primary:hover {
-            background: #6a3ae0;
-            box-shadow: 0 6px 22px rgba(124, 77, 255, 0.5);
-            transform: translateY(-1px);
+        .btn-primary:hover { background: #7a3fe0; }
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.85em;
+            border-radius: 8px;
         }
         .btn-outline {
             background: transparent;
             color: var(--text);
             border: 1.5px solid var(--border);
         }
-        .btn-outline:hover {
-            border-color: var(--accent);
-            background: rgba(124, 77, 255, 0.08);
-        }
-        .btn-danger {
-            background: transparent;
-            color: var(--danger);
-            border: 1.5px solid var(--danger);
-        }
-        .btn-danger:hover {
-            background: rgba(255, 82, 82, 0.1);
-        }
-        .btn-sm {
-            padding: 7px 14px;
-            font-size: 0.82em;
-            border-radius: 8px;
-        }
+        .btn-outline:hover { border-color: var(--accent); }
+        .btn-danger { color: var(--danger); border-color: var(--danger); }
+        .btn-danger:hover { background: rgba(255,82,82,0.1); }
 
-        main {
-            flex: 1;
-            padding: 24px 28px;
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        .drop-zone {
-            border: 2px dashed var(--border);
-            border-radius: var(--radius);
-            padding: 40px 24px;
-            text-align: center;
-            transition: var(--transition);
-            cursor: pointer;
-            background: var(--surface);
-        }
-        .drop-zone:hover,
-        .drop-zone.drag-active {
-            border-color: var(--accent);
-            background: rgba(124, 77, 255, 0.05);
-            box-shadow: inset 0 0 60px rgba(124, 77, 255, 0.04);
-        }
-        .drop-zone.drag-active {
-            border-style: solid;
-            background: rgba(124, 77, 255, 0.1);
-            transform: scale(1.01);
-        }
-        .drop-zone-icon {
-            font-size: 3em;
-            margin-bottom: 12px;
-            display: block;
-        }
-        .drop-zone h3 {
-            font-size: 1.2em;
-            margin-bottom: 6px;
-            color: var(--text);
-        }
-        .drop-zone p {
-            color: var(--text2);
-            font-size: 0.9em;
-        }
-        .drop-zone input[type="file"] {
-            display: none;
-        }
-        .supported-formats {
-            margin-top: 12px;
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .format-badge {
-            background: var(--surface2);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.78em;
-            color: var(--text2);
-            font-weight: 500;
-            letter-spacing: 0.3px;
-        }
-
-        .section-title {
-            font-size: 1.1em;
-            font-weight: 700;
-            color: var(--text2);
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .section-title .count {
-            background: var(--surface2);
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            color: var(--accent2);
-        }
         .game-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
         }
         .game-card {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 20px;
+            padding: 16px;
+            cursor: pointer;
             transition: var(--transition);
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            position: relative;
-            overflow: hidden;
+            align-items: center;
+            gap: 12px;
         }
         .game-card:hover {
             border-color: var(--accent);
+            transform: translateY(-4px);
             box-shadow: var(--shadow);
-            transform: translateY(-3px);
         }
-        .game-card .game-icon {
-            font-size: 2.5em;
-            text-align: center;
+        .game-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: var(--surface2);
+            border: 2px solid var(--border);
         }
-        .game-card .game-name {
+        .game-name {
             font-weight: 700;
             text-align: center;
             word-break: break-word;
-            line-height: 1.3;
-            cursor: pointer;
-            padding: 4px;
-            border-radius: 6px;
-        }
-        .game-card .game-name:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-        .game-card .game-meta {
-            font-size: 0.75em;
-            color: var(--text2);
-            text-align: center;
-        }
-        .game-card .card-actions {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-        }
-        .game-card .card-actions .btn {
-            flex: 1;
-            justify-content: center;
-            padding: 8px 10px;
-            font-size: 0.8em;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 50px 20px;
-            color: var(--text2);
-            grid-column: 1 / -1;
-        }
-        .empty-state .empty-icon {
-            font-size: 4em;
-            display: block;
-            margin-bottom: 12px;
-            opacity: 0.7;
         }
 
-        /* Player overlay */
+        .empty-state {
+            grid-column: 1/-1;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text2);
+        }
+
+        /* Страница игры */
+        #details-view {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+        .details-cover {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: var(--radius);
+            background: var(--surface2);
+            margin-bottom: 20px;
+        }
+        .details-header {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .details-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: var(--surface2);
+            border: 3px solid var(--accent);
+        }
+        .details-title {
+            font-size: 2em;
+            font-weight: 700;
+        }
+        .details-section {
+            background: var(--surface);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .details-section h3 {
+            margin-bottom: 10px;
+            color: var(--accent2);
+        }
+        .requirements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+        }
+        .req-item {
+            background: var(--bg);
+            padding: 12px;
+            border-radius: 8px;
+        }
+        .req-label {
+            font-size: 0.8em;
+            color: var(--text2);
+            margin-bottom: 4px;
+        }
+
+        /* Плеер */
         .player-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.92);
+            background: #000;
             z-index: 200;
-            display: flex;
+            display: none;
             flex-direction: column;
-            animation: fadeIn 0.3s ease;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
         }
         .player-toolbar {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 10px 18px;
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-        }
-        .player-toolbar .game-title-display {
-            font-weight: 700;
-            flex: 1;
-            min-width: 0;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            padding: 8px 16px;
+            background: #111;
+            color: #fff;
         }
         .player-iframe-container {
             flex: 1;
             background: #000;
-            position: relative;
         }
-        .player-iframe-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            display: block;
-        }
-        .player-placeholder {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #555;
-            font-size: 1.2em;
-            pointer-events: none;
-        }
+        iframe { width:100%; height:100%; border:none; }
 
-        .toast-container {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 300;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            pointer-events: none;
-        }
-        .toast {
-            background: var(--surface2);
-            color: var(--text);
-            padding: 14px 20px;
-            border-radius: var(--radius-sm);
-            border-left: 4px solid var(--accent);
-            box-shadow: var(--shadow);
-            animation: slideIn 0.35s ease;
-            pointer-events: auto;
-            font-size: 0.9em;
-            font-weight: 500;
-            max-width: 400px;
-        }
-        .toast.error {
-            border-left-color: var(--danger);
-        }
-        .toast.success {
-            border-left-color: var(--success);
-        }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(60px); }
-            to { opacity: 1; transform: translateX(0); }
+        .add-game-label {
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
         @media (max-width: 768px) {
-            header { padding: 12px 16px; }
-            .logo { font-size: 1.3em; }
-            .btn { padding: 9px 14px; font-size: 0.85em; }
-            main { padding: 16px; }
-            .drop-zone { padding: 28px 16px; }
-            .game-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+            #main-content { padding: 20px 16px 20px 70px; }
+            .sidebar-open #main-content { padding-left: 20px; }
+            .details-header { flex-direction: column; align-items: flex-start; }
         }
     </style>
 </head>
 <body>
-    <header>
-        <span class="logo">🎮 VatruStudio игровой центр</span>
-        <div class="header-actions">
-            <button class="btn btn-outline btn-sm" onclick="clearAllGames()">🗑️ Очистить всё</button>
-            <button class="btn btn-outline btn-sm" onclick="exportAllGames()">📦 Экспорт</button>
-        </div>
-    </header>
-
-    <main>
-        <div class="drop-zone" id="dropZone">
-            <span class="drop-zone-icon">📂</span>
-            <h3>Перетащите файлы сюда</h3>
-            <p>или нажмите, чтобы выбрать</p>
-            <div class="supported-formats">
-                <span class="format-badge">.ZIP архив</span>
-                <span class="format-badge">.HTML файл</span>
+    <div id="app-container">
+        <!-- Боковое меню -->
+        <div id="sidebar">
+            <div class="sidebar-header">
+                <span class="sidebar-logo">🎮 Игровой центр</span>
+                <button class="sidebar-close" id="sidebar-close-btn">✕</button>
             </div>
-            <input type="file" id="fileInput" accept=".zip,.html,.htm" multiple>
+            <nav class="sidebar-nav">
+                <button data-view="home" class="active"><span>🏠</span> Главная</button>
+                <button id="btn-add-game-sidebar"><span>➕</span> Добавить игру</button>
+                <button id="btn-export"><span>📦</span> Экспорт</button>
+                <button id="btn-clear"><span>🗑️</span> Очистить всё</button>
+            </nav>
+            <div class="sidebar-footer">Лицензия VatruStudio</div>
         </div>
+        <button id="menu-toggle">☰</button>
 
-        <div>
-            <div class="section-title">
-                📚 Мои игры <span class="count" id="gameCount">0</span>
+        <!-- Основная область -->
+        <div id="main-content">
+            <!-- Главный экран -->
+            <div id="home-view">
+                <div class="home-header">
+                    <h1 class="home-title">🎮 Игровой центр</h1>
+                    <label class="btn btn-primary btn-sm add-game-label" id="btn-add-game">
+                        <span>➕</span> Добавить игру
+                    </label>
+                </div>
+                <div class="game-grid" id="gameGrid"></div>
             </div>
-            <div class="game-grid" id="gameGrid"></div>
-        </div>
-    </main>
 
-    <div class="player-overlay" id="playerOverlay" style="display:none;">
-        <div class="player-toolbar">
-            <span class="game-title-display" id="playerTitle">🎮 Игра</span>
-            <button class="btn btn-outline btn-sm" onclick="toggleFullscreen()">⛶</button>
-            <button class="btn btn-outline btn-sm" onclick="reloadGame()">🔄</button>
-            <button class="btn btn-danger btn-sm" onclick="closePlayer()">✕ Закрыть</button>
+            <!-- Детали игры -->
+            <div id="details-view">
+                <button class="btn btn-outline btn-sm" id="btn-back" style="margin-bottom:16px;">← Назад</button>
+                <img class="details-cover" id="detailCover" src="" alt="Обложка">
+                <div class="details-header">
+                    <img class="details-avatar" id="detailAvatar" src="" alt="Аватар">
+                    <h2 class="details-title" id="detailTitle"></h2>
+                </div>
+                <div class="details-section" id="detailDescription"></div>
+                <div class="details-section">
+                    <h3>⚙️ Минимальные требования</h3>
+                    <div class="requirements-grid" id="detailRequirements"></div>
+                </div>
+                <button class="btn btn-primary" id="btn-play">▶ Играть</button>
+            </div>
         </div>
-        <div class="player-iframe-container" id="playerContainer">
-            <div class="player-placeholder" id="playerPlaceholder">Загрузка игры...</div>
-            <iframe id="gameIframe" sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-modals allow-forms allow-popups" allow="fullscreen; autoplay; clipboard-write"></iframe>
+
+        <!-- Плеер -->
+        <div class="player-overlay" id="playerOverlay">
+            <div class="player-toolbar">
+                <span id="playerTitle">Игра</span>
+                <button class="btn btn-sm btn-outline" onclick="toggleFullscreen()" style="color:#fff;border-color:#555;">⛶</button>
+                <button class="btn btn-sm btn-outline" onclick="reloadGame()" style="color:#fff;border-color:#555;">🔄</button>
+                <button class="btn btn-sm btn-danger" onclick="closePlayer()">✕ Закрыть</button>
+            </div>
+            <div class="player-iframe-container">
+                <iframe id="gameIframe" sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-modals allow-forms allow-popups" allow="fullscreen; autoplay; clipboard-write"></iframe>
+            </div>
         </div>
     </div>
 
-    <div class="toast-container" id="toastContainer"></div>
+    <input type="file" id="fileInput" accept=".zip,.html,.htm" multiple style="display:none;">
 
     <script>
         (function() {
             // ---------- IndexedDB ----------
-            const DB_NAME = 'VatruStudioDB';
-            const DB_VERSION = 1;
+            const DB_NAME = 'GameCenterDB';
+            const DB_VERSION = 2;
             const STORE_NAME = 'games';
-            let db = null;
+            let db;
 
             function openDB() {
                 return new Promise((resolve, reject) => {
-                    const request = indexedDB.open(DB_NAME, DB_VERSION);
-                    request.onupgradeneeded = (e) => {
+                    const req = indexedDB.open(DB_NAME, DB_VERSION);
+                    req.onupgradeneeded = (e) => {
                         const database = e.target.result;
                         if (!database.objectStoreNames.contains(STORE_NAME)) {
                             const store = database.createObjectStore(STORE_NAME, { keyPath: 'id' });
-                            store.createIndex('name', 'name', { unique: false });
-                            store.createIndex('addedAt', 'addedAt', { unique: false });
+                            store.createIndex('addedAt', 'addedAt');
                         }
                     };
-                    request.onsuccess = (e) => { db = e.target.result; resolve(db); };
-                    request.onerror = (e) => reject(e.target.error);
+                    req.onsuccess = () => { db = req.result; resolve(); };
+                    req.onerror = () => reject(req.error);
                 });
             }
 
-            function saveGameToDB(gameData) {
-                return new Promise((resolve, reject) => {
+            function saveGame(game) {
+                return new Promise((res, rej) => {
                     const tx = db.transaction(STORE_NAME, 'readwrite');
-                    const store = tx.objectStore(STORE_NAME);
-                    const request = store.put(gameData);
-                    request.onsuccess = () => resolve();
-                    request.onerror = (e) => reject(e.target.error);
+                    tx.objectStore(STORE_NAME).put(game);
+                    tx.oncomplete = res;
+                    tx.onerror = () => rej(tx.error);
                 });
             }
-
-            function getAllGamesFromDB() {
-                return new Promise((resolve, reject) => {
+            function getAllGames() {
+                return new Promise((res, rej) => {
                     const tx = db.transaction(STORE_NAME, 'readonly');
-                    const store = tx.objectStore(STORE_NAME);
-                    const request = store.getAll();
-                    request.onsuccess = () => resolve(request.result || []);
-                    request.onerror = (e) => reject(e.target.error);
+                    const req = tx.objectStore(STORE_NAME).getAll();
+                    req.onsuccess = () => res(req.result || []);
+                    req.onerror = () => rej(req.error);
                 });
             }
-
-            function deleteGameFromDB(id) {
-                return new Promise((resolve, reject) => {
+            function deleteGame(id) {
+                return new Promise((res, rej) => {
                     const tx = db.transaction(STORE_NAME, 'readwrite');
-                    const store = tx.objectStore(STORE_NAME);
-                    const request = store.delete(id);
-                    request.onsuccess = () => resolve();
-                    request.onerror = (e) => reject(e.target.error);
+                    tx.objectStore(STORE_NAME).delete(id);
+                    tx.oncomplete = res;
+                    tx.onerror = () => rej(tx.error);
                 });
             }
-
-            function clearAllGamesFromDB() {
-                return new Promise((resolve, reject) => {
+            function clearAll() {
+                return new Promise((res, rej) => {
                     const tx = db.transaction(STORE_NAME, 'readwrite');
-                    const store = tx.objectStore(STORE_NAME);
-                    const request = store.clear();
-                    request.onsuccess = () => resolve();
-                    request.onerror = (e) => reject(e.target.error);
+                    tx.objectStore(STORE_NAME).clear();
+                    tx.oncomplete = res;
+                    tx.onerror = () => rej(tx.error);
                 });
             }
 
-            function updateGameInDB(gameData) {
-                return saveGameToDB(gameData); // перезапись по ключу
-            }
-
-            // ---------- Глобальные переменные ----------
+            // ---------- Глобальное состояние ----------
             let gamesCache = [];
             let currentGameId = null;
-            let activeBlobUrls = []; // для очистки при закрытии игры
+            let activeBlobUrls = [];
+            let currentView = 'home'; // home | details
+            let selectedGame = null;
 
-            // ---------- DOM ----------
-            const dropZone = document.getElementById('dropZone');
-            const fileInput = document.getElementById('fileInput');
+            // DOM
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.getElementById('menu-toggle');
+            const sidebarClose = document.getElementById('sidebar-close-btn');
+            const mainContent = document.getElementById('main-content');
+            const homeView = document.getElementById('home-view');
+            const detailsView = document.getElementById('details-view');
             const gameGrid = document.getElementById('gameGrid');
-            const gameCountEl = document.getElementById('gameCount');
+            const fileInput = document.getElementById('fileInput');
             const playerOverlay = document.getElementById('playerOverlay');
             const playerTitle = document.getElementById('playerTitle');
             const gameIframe = document.getElementById('gameIframe');
-            const playerPlaceholder = document.getElementById('playerPlaceholder');
-            const toastContainer = document.getElementById('toastContainer');
-            const playerContainer = document.getElementById('playerContainer');
+            const btnAddGame = document.getElementById('btn-add-game');
+            const btnAddGameSidebar = document.getElementById('btn-add-game-sidebar');
+            const btnExport = document.getElementById('btn-export');
+            const btnClear = document.getElementById('btn-clear');
+            const btnBack = document.getElementById('btn-back');
+            const btnPlay = document.getElementById('btn-play');
+            const detailCover = document.getElementById('detailCover');
+            const detailAvatar = document.getElementById('detailAvatar');
+            const detailTitle = document.getElementById('detailTitle');
+            const detailDescription = document.getElementById('detailDescription');
+            const detailRequirements = document.getElementById('detailRequirements');
 
-            // ---------- Утилиты ----------
-            function generateId() {
-                return 'game_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            // ---------- Боковое меню ----------
+            function toggleSidebar() { sidebar.classList.toggle('open'); }
+            menuToggle.addEventListener('click', toggleSidebar);
+            sidebarClose.addEventListener('click', () => sidebar.classList.remove('open'));
+            document.querySelectorAll('.sidebar-nav button[data-view]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const view = btn.dataset.view;
+                    if (view === 'home') showHome();
+                    sidebar.classList.remove('open');
+                });
+            });
+            btnAddGameSidebar.addEventListener('click', () => { fileInput.click(); sidebar.classList.remove('open'); });
+            btnExport.addEventListener('click', () => { exportAll(); sidebar.classList.remove('open'); });
+            btnClear.addEventListener('click', () => { clearAllData(); sidebar.classList.remove('open'); });
+            btnAddGame.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', (e) => { handleFiles(e.target.files); fileInput.value = ''; });
+
+            // Drag & drop на всё окно
+            window.addEventListener('dragover', e => e.preventDefault());
+            window.addEventListener('drop', e => {
+                e.preventDefault();
+                if (playerOverlay.style.display === 'flex') return;
+                handleFiles(e.dataTransfer.files);
+            });
+
+            // ---------- Отображение главного экрана ----------
+            function showHome() {
+                detailsView.style.display = 'none';
+                homeView.style.display = 'block';
+                currentView = 'home';
+                selectedGame = null;
+                renderGameGrid();
             }
 
-            function showToast(message, type = '') {
-                const toast = document.createElement('div');
-                toast.className = 'toast ' + type;
-                toast.textContent = message;
-                toastContainer.appendChild(toast);
-                setTimeout(() => {
-                    toast.style.opacity = '0';
-                    toast.style.transition = 'opacity 0.4s ease';
-                    setTimeout(() => toast.remove(), 400);
-                }, 3500);
+            function showDetails(game) {
+                selectedGame = game;
+                homeView.style.display = 'none';
+                detailsView.style.display = 'block';
+                currentView = 'details';
+                // Заполняем данные
+                detailTitle.textContent = game.name;
+                detailDescription.innerHTML = `<p>${escapeHtml(game.info?.description || 'Описание отсутствует.')}</p>`;
+                // Обложка и аватарка
+                if (game.coverUrl) detailCover.src = game.coverUrl;
+                else detailCover.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="200" fill="%232a2a45"><rect width="800" height="200"/></svg>';
+                if (game.avatarUrl) detailAvatar.src = game.avatarUrl;
+                else detailAvatar.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="%232a2a45"><circle cx="50" cy="50" r="50"/></svg>';
+
+                // Требования
+                const reqDiv = detailRequirements;
+                reqDiv.innerHTML = '';
+                if (game.info?.requirements) {
+                    const req = game.info.requirements;
+                    for (let [key, value] of Object.entries(req)) {
+                        reqDiv.innerHTML += `<div class="req-item"><div class="req-label">${key.toUpperCase()}</div><div>${value}</div></div>`;
+                    }
+                } else {
+                    reqDiv.innerHTML = '<p>Не указаны</p>';
+                }
             }
 
-            // Читаемое имя из имени файла
-            function readableName(filename) {
-                let name = filename.replace(/\.(zip|html|htm)$/i, '');
-                // заменяем дефисы, подчёркивания, точки на пробелы
-                name = name.replace(/[-_\.]+/g, ' ');
-                // делаем первую букву каждого слова заглавной
-                name = name.replace(/\b\w/g, c => c.toUpperCase());
-                // убираем лишние пробелы
-                return name.trim() || 'Без названия';
+            btnBack.addEventListener('click', showHome);
+            btnPlay.addEventListener('click', () => {
+                if (selectedGame) launchGame(selectedGame.id);
+            });
+
+            // Рендер сетки игр
+            function renderGameGrid() {
+                gameGrid.innerHTML = '';
+                gamesCache.sort((a,b) => b.addedAt - a.addedAt);
+                if (gamesCache.length === 0) {
+                    gameGrid.innerHTML = `<div class="empty-state"><p>Нет игр. Нажмите «Добавить игру».</p></div>`;
+                    return;
+                }
+                gamesCache.forEach(game => {
+                    const card = document.createElement('div');
+                    card.className = 'game-card';
+                    card.innerHTML = `
+                        <img class="game-avatar" src="${game.avatarUrl || 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="%232a2a45"><circle cx="40" cy="40" r="40"/></svg>'}" alt="">
+                        <div class="game-name">${escapeHtml(game.name)}</div>
+                    `;
+                    card.addEventListener('click', () => showDetails(game));
+                    gameGrid.appendChild(card);
+                });
             }
 
             function escapeHtml(str) {
@@ -531,304 +585,217 @@
                 return div.innerHTML;
             }
 
-            function revokeBlobUrls(urls) {
-                urls.forEach(url => {
-                    try { URL.revokeObjectURL(url); } catch(e) {}
-                });
+            // ---------- Добавление игр с проверкой лицензии ----------
+            async function handleFiles(files) {
+                for (let file of files) {
+                    const ext = file.name.split('.').pop().toLowerCase();
+                    if (ext === 'zip') {
+                        await processZip(file);
+                    } else if (ext === 'html' || ext === 'htm') {
+                        await processHtml(file);
+                    } else {
+                        alert('Неподдерживаемый формат: ' + file.name);
+                    }
+                }
+                await refreshGames();
+                showHome();
             }
 
-            // ---------- Распаковка ZIP и запуск ----------
+            async function processZip(zipFile) {
+                try {
+                    const zip = await JSZip.loadAsync(zipFile);
+                    // Проверка лицензии
+                    const licenseFile = zip.file('VatruStudioLicense.json');
+                    if (!licenseFile) throw new Error('Лицензионный файл не найден!');
+                    const licenseText = await licenseFile.async('text');
+                    const license = JSON.parse(licenseText);
+                    if (license.code !== 'vatrustudio-veryfycate') throw new Error('Недействительная лицензия VatruStudio!');
+
+                    // info.json
+                    const infoFile = zip.file('info.json');
+                    let info = {};
+                    if (infoFile) {
+                        const infoText = await infoFile.async('text');
+                        info = JSON.parse(infoText);
+                    }
+
+                    // Аватар и обложка
+                    let avatarData = null, avatarName = '';
+                    let coverData = null, coverName = '';
+                    zip.forEach((relativePath, file) => {
+                        if (file.dir) return;
+                        const name = relativePath.split('/').pop();
+                        if (/^avatar\.(png|jpg|jpeg|webp|gif)$/i.test(name)) {
+                            avatarName = name;
+                        } else if (/^up\.(png|jpg|jpeg|webp|gif)$/i.test(name)) {
+                            coverName = name;
+                        }
+                    });
+                    if (avatarName) avatarData = await zip.file(avatarName).async('arraybuffer');
+                    if (coverName) coverData = await zip.file(coverName).async('arraybuffer');
+
+                    // Сохраняем blob URL для приложения
+                    const zipBlob = await zip.generateAsync({ type: 'blob' });
+                    const blobUrl = URL.createObjectURL(zipBlob);
+                    const gameId = 'game_' + Date.now() + '_' + Math.random().toString(36);
+                    const game = {
+                        id: gameId,
+                        name: info.title || readableName(zipFile.name),
+                        type: 'zip',
+                        blobUrl: blobUrl,
+                        addedAt: Date.now(),
+                        info: info,
+                        avatarData: avatarData,
+                        avatarName: avatarName,
+                        coverData: coverData,
+                        coverName: coverName,
+                    };
+                    // Создаем временные URL для отображения
+                    game.avatarUrl = avatarData ? URL.createObjectURL(new Blob([avatarData], {type: getMime(avatarName)})) : null;
+                    game.coverUrl = coverData ? URL.createObjectURL(new Blob([coverData], {type: getMime(coverName)})) : null;
+                    await saveGame(game);
+                } catch (err) {
+                    alert('Ошибка добавления ZIP: ' + err.message);
+                }
+            }
+
+            function getMime(filename) {
+                const ext = filename.split('.').pop().toLowerCase();
+                const map = { png:'image/png', jpg:'image/jpeg', jpeg:'image/jpeg', webp:'image/webp', gif:'image/gif' };
+                return map[ext] || 'image/png';
+            }
+
+            async function processHtml(file) {
+                const blobUrl = URL.createObjectURL(file);
+                const game = {
+                    id: 'game_' + Date.now() + '_' + Math.random().toString(36),
+                    name: readableName(file.name),
+                    type: 'html',
+                    blobUrl: blobUrl,
+                    addedAt: Date.now(),
+                    info: { description: '' },
+                    avatarData: null,
+                    coverData: null,
+                };
+                await saveGame(game);
+            }
+
+            function readableName(filename) {
+                return filename.replace(/\.(zip|html|htm)$/i, '').replace(/[-_]/g, ' ').replace(/\b\w/g, c=>c.toUpperCase()).trim() || 'Без названия';
+            }
+
+            async function refreshGames() {
+                gamesCache = await getAllGames();
+                // Восстанавливаем blob URL для изображений из ArrayBuffer
+                gamesCache.forEach(game => {
+                    if (game.avatarData && !game.avatarUrl) {
+                        game.avatarUrl = URL.createObjectURL(new Blob([game.avatarData], {type: getMime(game.avatarName||'avatar.png')}));
+                    }
+                    if (game.coverData && !game.coverUrl) {
+                        game.coverUrl = URL.createObjectURL(new Blob([game.coverData], {type: getMime(game.coverName||'up.png')}));
+                    }
+                });
+                if (currentView === 'home') renderGameGrid();
+            }
+
+            // ---------- Запуск игры ----------
+            async function launchGame(id) {
+                const game = gamesCache.find(g => g.id === id);
+                if (!game) return;
+                revokeActiveBlobs();
+                currentGameId = id;
+                playerTitle.textContent = '🎮 ' + game.name;
+                playerOverlay.style.display = 'flex';
+                gameIframe.src = '';
+                try {
+                    let url;
+                    if (game.type === 'zip') {
+                        url = await prepareZipGame(game);
+                    } else {
+                        url = game.blobUrl;
+                    }
+                    gameIframe.src = url;
+                } catch (e) {
+                    alert('Ошибка запуска: ' + e.message);
+                }
+            }
+
             async function prepareZipGame(game) {
-                // Получаем blob архива
-                const response = await fetch(game.blobUrl);
-                const zipBlob = await response.blob();
-                const zip = await JSZip.loadAsync(zipBlob);
-
-                // Находим главный HTML
-                const htmlFiles = Object.keys(zip.files).filter(f => !zip.files[f].dir && (f.endsWith('.html') || f.endsWith('.htm')));
-                if (htmlFiles.length === 0) throw new Error('В ZIP нет HTML-файлов');
-                const mainFile = htmlFiles.find(f => f.toLowerCase().includes('index.html') || f.toLowerCase().includes('index.htm')) || htmlFiles[0];
-
-                // Читаем главный HTML
-                const mainContent = await zip.file(mainFile).async('text');
-
-                // Создаём blob URL для всех остальных файлов
-                const blobUrls = {};
-                for (const filename of Object.keys(zip.files)) {
-                    if (zip.files[filename].dir || filename === mainFile) continue;
-                    const fileBlob = await zip.file(filename).async('blob');
-                    const url = URL.createObjectURL(fileBlob);
-                    blobUrls[filename] = url;
-                    activeBlobUrls.push(url); // для последующей очистки
+                const resp = await fetch(game.blobUrl);
+                const blob = await resp.blob();
+                const zip = await JSZip.loadAsync(blob);
+                const htmlFiles = Object.keys(zip.files).filter(f => !zip.files[f].dir && (f.endsWith('.html')||f.endsWith('.htm')));
+                if (!htmlFiles.length) throw new Error('HTML не найден');
+                const main = htmlFiles.find(f => /index\.html?$/i.test(f)) || htmlFiles[0];
+                let html = await zip.file(main).async('text');
+                // Замена ссылок на blob URL
+                const replacements = {};
+                for (let name of Object.keys(zip.files)) {
+                    if (zip.files[name].dir || name === main) continue;
+                    const fblob = await zip.file(name).async('blob');
+                    const url = URL.createObjectURL(fblob);
+                    activeBlobUrls.push(url);
+                    replacements[name] = url;
                 }
-
-                // Заменяем относительные ссылки в HTML на blob URL
-                let modifiedHtml = mainContent;
-                // Простая замена: ищем все вхождения имён файлов внутри атрибутов src, href, и в url()
-                // Это покрывает большинство случаев
-                for (const [filename, blobUrl] of Object.entries(blobUrls)) {
-                    // Экранируем специальные символы для регулярки
-                    const escapedName = filename.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                    // Замена в src="..." и href="..."
-                    const regex = new RegExp(`(src|href)=["']${escapedName}["']`, 'gi');
-                    modifiedHtml = modifiedHtml.replace(regex, `$1="${blobUrl}"`);
-                    // Замена в url(...)
-                    const urlRegex = new RegExp(`url\\(["']?${escapedName}["']?\\)`, 'gi');
-                    modifiedHtml = modifiedHtml.replace(urlRegex, `url(${blobUrl})`);
+                for (let [name, url] of Object.entries(replacements)) {
+                    const esc = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    html = html.replace(new RegExp(`(src|href)=["']${esc}["']`, 'gi'), `$1="${url}"`);
+                    html = html.replace(new RegExp(`url\\(["']?${esc}["']?\\)`, 'gi'), `url(${url})`);
                 }
-
-                const finalBlob = new Blob([modifiedHtml], { type: 'text/html' });
+                const finalBlob = new Blob([html], {type:'text/html'});
                 const finalUrl = URL.createObjectURL(finalBlob);
                 activeBlobUrls.push(finalUrl);
                 return finalUrl;
             }
 
-            async function launchGame(id) {
-                const game = gamesCache.find(g => g.id === id);
-                if (!game) return;
-
-                // Очищаем предыдущие blob URL
-                revokeBlobUrls(activeBlobUrls);
-                activeBlobUrls = [];
-
-                currentGameId = id;
-                playerTitle.textContent = '🎮 ' + game.name;
-                playerOverlay.style.display = 'flex';
-                playerPlaceholder.style.display = 'flex';
-                gameIframe.src = '';
-
-                try {
-                    let srcUrl;
-                    if (game.type === 'zip') {
-                        playerPlaceholder.textContent = 'Распаковка архива...';
-                        srcUrl = await prepareZipGame(game);
-                    } else {
-                        srcUrl = game.blobUrl;
-                    }
-                    gameIframe.src = srcUrl;
-                    gameIframe.onload = () => { playerPlaceholder.style.display = 'none'; };
-                    gameIframe.onerror = () => {
-                        playerPlaceholder.innerHTML = '<span style="color:#ff5252;">⚠️ Ошибка загрузки игры</span>';
-                    };
-                } catch (err) {
-                    playerPlaceholder.innerHTML = `<span style="color:#ff5252;">❌ ${escapeHtml(err.message)}</span>`;
-                    console.error(err);
-                }
-            }
-
             function closePlayer() {
                 playerOverlay.style.display = 'none';
                 gameIframe.src = '';
-                revokeBlobUrls(activeBlobUrls);
-                activeBlobUrls = [];
+                revokeActiveBlobs();
                 currentGameId = null;
-                playerPlaceholder.textContent = 'Загрузка игры...';
             }
-
-            function reloadGame() {
-                if (currentGameId) launchGame(currentGameId);
-            }
-
+            function reloadGame() { if (currentGameId) launchGame(currentGameId); }
             function toggleFullscreen() {
-                if (document.fullscreenElement) {
-                    document.exitFullscreen();
-                } else {
-                    playerContainer.requestFullscreen().catch(() => {});
-                }
+                const el = document.querySelector('.player-iframe-container');
+                if (document.fullscreenElement) document.exitFullscreen();
+                else el.requestFullscreen();
+            }
+            function revokeActiveBlobs() {
+                activeBlobUrls.forEach(u => URL.revokeObjectURL(u));
+                activeBlobUrls = [];
             }
 
-            // ---------- Управление играми ----------
-            async function refreshGameList() {
-                gamesCache = await getAllGamesFromDB();
-                gameGrid.innerHTML = '';
-                gameCountEl.textContent = gamesCache.length;
-                if (gamesCache.length === 0) {
-                    gameGrid.innerHTML = `<div class="empty-state"><span class="empty-icon">🎲</span><p>Здесь пока нет игр.</p><p style="font-size:0.85em;">Загрузите HTML-файл или ZIP-архив</p></div>`;
-                    return;
-                }
-                gamesCache.sort((a, b) => b.addedAt - a.addedAt);
-                gamesCache.forEach(game => {
-                    const card = document.createElement('div');
-                    card.className = 'game-card';
-                    card.innerHTML = `
-                        <div class="game-icon">${game.type === 'zip' ? '📦' : '🎯'}</div>
-                        <div class="game-name" title="Двойной клик — переименовать">${escapeHtml(game.name)}</div>
-                        <div class="game-meta">${game.type === 'zip' ? 'ZIP' : 'HTML'} · ${new Date(game.addedAt).toLocaleDateString('ru-RU')}</div>
-                        <div class="card-actions">
-                            <button class="btn btn-primary btn-sm play-btn" data-id="${game.id}">▶ Играть</button>
-                            <button class="btn btn-outline btn-sm rename-btn" data-id="${game.id}">✏️</button>
-                            <button class="btn btn-outline btn-sm delete-btn" data-id="${game.id}">🗑️</button>
-                        </div>
-                    `;
-                    // Обработчики
-                    card.querySelector('.play-btn').addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        launchGame(game.id);
-                    });
-                    card.querySelector('.delete-btn').addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        deleteGame(game.id);
-                    });
-                    card.querySelector('.rename-btn').addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        renameGame(game.id);
-                    });
-                    // Двойной клик по названию тоже переименовывает
-                    card.querySelector('.game-name').addEventListener('dblclick', (e) => {
-                        e.stopPropagation();
-                        renameGame(game.id);
-                    });
-                    card.addEventListener('click', (e) => {
-                        if (!e.target.closest('button')) launchGame(game.id);
-                    });
-                    gameGrid.appendChild(card);
-                });
-            }
-
-            async function deleteGame(id) {
-                if (!confirm('Удалить эту игру?')) return;
-                const game = gamesCache.find(g => g.id === id);
-                if (game && game.blobUrl) URL.revokeObjectURL(game.blobUrl);
-                await deleteGameFromDB(id);
-                if (currentGameId === id) closePlayer();
-                await refreshGameList();
-                showToast('Игра удалена', 'success');
-            }
-
-            async function renameGame(id) {
-                const game = gamesCache.find(g => g.id === id);
-                if (!game) return;
-                const newName = prompt('Введите новое название игры:', game.name);
-                if (newName === null || newName.trim() === '') return;
-                game.name = newName.trim();
-                await updateGameInDB(game);
-                await refreshGameList();
-                showToast('Название обновлено', 'success');
-            }
-
-            async function clearAllGames() {
-                if (!confirm('Удалить ВСЕ игры безвозвратно?')) return;
-                for (const game of gamesCache) {
-                    if (game.blobUrl) URL.revokeObjectURL(game.blobUrl);
-                }
-                await clearAllGamesFromDB();
-                closePlayer();
-                await refreshGameList();
-                showToast('Всё очищено', 'success');
-            }
-
-            async function exportAllGames() {
-                if (gamesCache.length === 0) { showToast('Нет игр для экспорта', 'error'); return; }
-                if (typeof JSZip === 'undefined') { showToast('JSZip не загружен', 'error'); return; }
+            // Экспорт и очистка
+            async function exportAll() {
+                if (!gamesCache.length) return alert('Нет игр');
                 const zip = new JSZip();
-                const folder = zip.folder('vatrustudio-games');
-                for (const game of gamesCache) {
-                    const response = await fetch(game.blobUrl);
-                    const blob = await response.blob();
-                    folder.file(game.name + (game.type === 'zip' ? '.zip' : '.html'), blob);
+                const folder = zip.folder('games');
+                for (let g of gamesCache) {
+                    const resp = await fetch(g.blobUrl);
+                    const b = await resp.blob();
+                    folder.file(g.name + (g.type==='zip'?'.zip':'.html'), b);
                 }
-                const content = await zip.generateAsync({ type: 'blob' });
-                const url = URL.createObjectURL(content);
+                const blob = await zip.generateAsync({type:'blob'});
                 const a = document.createElement('a');
-                a.href = url;
-                a.download = 'vatrustudio-games-' + new Date().toISOString().slice(0,10) + '.zip';
+                a.href = URL.createObjectURL(blob);
+                a.download = 'game-center-export.zip';
                 a.click();
-                URL.revokeObjectURL(url);
-                showToast('Архив с играми скачан', 'success');
+            }
+            async function clearAllData() {
+                if (!confirm('Удалить все игры?')) return;
+                for (let g of gamesCache) URL.revokeObjectURL(g.blobUrl);
+                await clearAll();
+                gamesCache = [];
+                showHome();
             }
 
-            // ---------- Добавление файлов ----------
-            async function processZipFile(zipFile, zipFileName) {
-                const blobUrl = URL.createObjectURL(zipFile);
-                return {
-                    id: generateId(),
-                    name: readableName(zipFileName),
-                    type: 'zip',
-                    blobUrl: blobUrl,
-                    originalName: zipFileName,
-                    addedAt: Date.now(),
-                };
-            }
-
-            async function processHtmlFile(htmlFile) {
-                const blobUrl = URL.createObjectURL(htmlFile);
-                return {
-                    id: generateId(),
-                    name: readableName(htmlFile.name),
-                    type: 'html',
-                    blobUrl: blobUrl,
-                    originalName: htmlFile.name,
-                    addedAt: Date.now(),
-                };
-            }
-
-            async function handleFiles(files) {
-                if (!files || files.length === 0) return;
-                let addedCount = 0;
-                for (const file of files) {
-                    try {
-                        const ext = file.name.split('.').pop().toLowerCase();
-                        let gameData;
-                        if (ext === 'zip') {
-                            gameData = await processZipFile(file, file.name);
-                        } else if (ext === 'html' || ext === 'htm') {
-                            gameData = await processHtmlFile(file);
-                        } else {
-                            showToast(`Неподдерживаемый формат: ${file.name}`, 'error');
-                            continue;
-                        }
-                        await saveGameToDB(gameData);
-                        addedCount++;
-                    } catch (err) {
-                        showToast(`Ошибка: ${file.name}`, 'error');
-                    }
-                }
-                if (addedCount > 0) showToast(`Добавлено игр: ${addedCount}`, 'success');
-                await refreshGameList();
-            }
-
-            // ---------- Drag & Drop ----------
-            dropZone.addEventListener('click', () => fileInput.click());
-            fileInput.addEventListener('change', (e) => {
-                handleFiles(e.target.files);
-                fileInput.value = '';
-            });
-            dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-active'); });
-            dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-active'));
-            dropZone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                dropZone.classList.remove('drag-active');
-                handleFiles(e.dataTransfer.files);
-            });
-            document.addEventListener('drop', (e) => {
-                e.preventDefault();
-                dropZone.classList.remove('drag-active');
-                if (playerOverlay.style.display === 'none' || !playerOverlay.style.display) {
-                    handleFiles(e.dataTransfer.files);
-                }
-            });
-            document.addEventListener('dragover', (e) => e.preventDefault());
-
-            // Клавиша Escape
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && playerOverlay.style.display === 'flex') closePlayer();
-            });
-
-            // ---------- Экспорт функций в window ----------
-            window.clearAllGames = clearAllGames;
-            window.exportAllGames = exportAllGames;
             window.closePlayer = closePlayer;
             window.reloadGame = reloadGame;
             window.toggleFullscreen = toggleFullscreen;
-            window.launchGame = launchGame;
-            window.deleteGame = deleteGame;
-            window.renameGame = renameGame;
 
-            // ---------- Старт ----------
-            openDB().then(() => refreshGameList()).catch(err => {
-                console.error(err);
-                showToast('Ошибка хранилища', 'error');
-            });
+            // Инициализация
+            openDB().then(refreshGames).then(showHome);
+            window.addEventListener('keydown', e => { if (e.key==='Escape' && playerOverlay.style.display==='flex') closePlayer(); });
         })();
     </script>
 </body>
